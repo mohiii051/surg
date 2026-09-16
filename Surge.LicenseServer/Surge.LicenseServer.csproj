@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- Single source of truth for the version reported by /api/health and /api/version/check. -->
+    <Version>19.4.1</Version>
+    <AssemblyVersion>19.4.1.0</AssemblyVersion>
+    <FileVersion>19.4.1.0</FileVersion>
+    <InformationalVersion>19.4.1</InformationalVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.10" />
+  </ItemGroup>
+</Project>

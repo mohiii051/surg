@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>19.4.1</Version>
+    <AssemblyVersion>19.4.1.0</AssemblyVersion>
+    <FileVersion>19.4.1.0</FileVersion>
+    <InformationalVersion>19.4.1</InformationalVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>true</Optimize>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+</Project>

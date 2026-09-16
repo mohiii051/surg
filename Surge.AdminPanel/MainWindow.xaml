@@ -1,0 +1,312 @@
+<Window x:Class="Surge.AdminPanel.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Surge Admin Panel v19.4.1"
+        Width="1500" Height="920" MinWidth="1180" MinHeight="760"
+        Background="#070B14" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#E7ECF7"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Foreground" Value="#EAF0FF"/>
+            <Setter Property="Background" Value="#16213A"/>
+            <Setter Property="BorderBrush" Value="#304264"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style x:Key="PrimaryButton2" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#5D7CFF"/>
+            <Setter Property="BorderBrush" Value="#7890FF"/>
+        </Style>
+        <Style x:Key="DangerButton2" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#63253A"/>
+            <Setter Property="BorderBrush" Value="#9C3B58"/>
+        </Style>
+        <Style x:Key="GridHeaderStyle2" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#172238"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+        <Style x:Key="GridCellStyle2" TargetType="DataGridCell">
+            <Setter Property="Foreground" Value="#F1F4FB"/>
+            <Setter Property="Background" Value="#0D1422"/>
+            <Setter Property="BorderBrush" Value="#1D2A42"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="GridRowStyle2" TargetType="DataGridRow">
+            <Setter Property="Background" Value="#0D1422"/>
+            <Setter Property="Foreground" Value="#F1F4FB"/>
+            <Setter Property="MinHeight" Value="42"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#29457F"/>
+                    <Setter Property="Foreground" Value="#FFFFFF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="GridTextStyle2" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F1F4FB"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+        <DataTemplate x:Key="MetricCardTemplate">
+            <Border Background="#101827" BorderBrush="#263754" BorderThickness="1" CornerRadius="14" Padding="18" Margin="4">
+                <StackPanel>
+                    <TextBlock Text="{Binding Title}" FontSize="12" Foreground="#8192B0" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding Value}" FontSize="30" FontWeight="Bold" Margin="0,8,0,2"/>
+                    <TextBlock Text="{Binding Hint}" FontSize="11" Foreground="#657895"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid Margin="22">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#0E1625" BorderBrush="#23324C" BorderThickness="1" CornerRadius="18" Padding="22" Margin="0,0,0,14">
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="SURGE ADMIN" FontSize="12" FontWeight="Bold" Foreground="#88A1FF"/>
+                    <TextBlock Text="License Control Center" FontSize="31" FontWeight="SemiBold" Margin="0,3,0,0"/>
+                    <TextBlock Text="Users  •  Devices  •  Licenses  •  Audit  •  Backup  •  Server" Foreground="#7F91B0" Margin="0,5,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border x:Name="ServerStatusBadge" Background="#203A32" CornerRadius="12" Padding="14,8" Margin="0,0,10,0">
+                        <TextBlock x:Name="ServerStatusText" Text="● Checking server" Foreground="#8CF0B0" FontWeight="SemiBold"/>
+                    </Border>
+                    <Button x:Name="LogoutButton" Content="Sign out" Click="Logout_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <TabControl x:Name="Tabs" Grid.Row="1" Background="Transparent" BorderThickness="0" SelectionChanged="Tabs_SelectionChanged">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Foreground" Value="#A8B7D0"/>
+                    <Setter Property="Background" Value="#0C1320"/>
+                    <Setter Property="BorderBrush" Value="#22324B"/>
+                    <Setter Property="Padding" Value="18,10"/>
+                    <Setter Property="Margin" Value="0,0,6,0"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" ContentSource="Header"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="#FFFFFF"/>
+                            <Setter Property="Background" Value="#1C2D50"/>
+                            <Setter Property="BorderBrush" Value="#5D7CFF"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TabControl.Resources>
+
+            <TabItem Header="Dashboard">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="4">
+                        <WrapPanel x:Name="Cards"/>
+                        <Grid Margin="0,12,0,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="420"/></Grid.ColumnDefinitions>
+                            <Border Background="#0E1625" BorderBrush="#23324C" BorderThickness="1" CornerRadius="14" Padding="18" Margin="0,0,10,0">
+                                <StackPanel>
+                                    <TextBlock Text="SERVER CONTROL" Foreground="#8FA4FF" FontSize="12" FontWeight="Bold"/>
+                                    <TextBlock Text="Production service operations" FontSize="21" FontWeight="SemiBold" Margin="0,4,0,4"/>
+                                    <TextBlock x:Name="ServerControlHint" Text="License server status will appear here." Foreground="#8192AE"/>
+                                    <WrapPanel Margin="0,14,0,0">
+                                        <Button x:Name="StartServerButton" Content="Start" Style="{StaticResource PrimaryButton2}" Click="StartServer_Click"/>
+                                        <Button x:Name="RestartServerButton" Content="Restart" Click="RestartServer_Click"/>
+                                        <Button x:Name="StopServerButton" Content="Stop" Style="{StaticResource DangerButton2}" Click="StopServer_Click"/>
+                                        <Button Content="Refresh" Click="RefreshServer_Click"/>
+                                    </WrapPanel>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Background="#0E1625" BorderBrush="#23324C" BorderThickness="1" CornerRadius="14" Padding="18">
+                                <StackPanel>
+                                    <TextBlock Text="QUICK NAVIGATION" Foreground="#8FA4FF" FontSize="12" FontWeight="Bold"/>
+                                    <TextBlock Text="Use the tabs above for full management." FontSize="18" FontWeight="SemiBold" Margin="0,4,0,14" TextWrapping="Wrap"/>
+                                    <TextBlock Text="Release HWID, revoke licenses, rotate keys, inspect audit logs, and restore backups from one control surface." Foreground="#8192AE" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Users">
+                <DockPanel Margin="4">
+                    <StackPanel DockPanel.Dock="Top">
+                        <WrapPanel>
+                            <TextBox x:Name="UserSearch" Width="320" ToolTip="Search by email or user ID"/>
+                            <Button Content="Search" Style="{StaticResource PrimaryButton2}" Click="Users_Click"/>
+                            <Button Content="Refresh" Click="UsersRefresh_Click"/>
+                            <Button Content="Enable / Disable" Click="ToggleUser_Click"/>
+                            <Button Content="Copy user ID" Click="CopyUserId_Click"/>
+                            <Button Content="Reset password" Style="{StaticResource DangerButton2}" Click="ResetUserPassword_Click"/>
+                        </WrapPanel>
+                        <TextBlock x:Name="UsersHint" Text="Select a user to manage account state. Reset password generates a new temporary password; the original password is never stored or recoverable." Foreground="#7184A2" Margin="6,3,0,9"/>
+                    </StackPanel>
+                    <DataGrid x:Name="UsersGrid" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" HeadersVisibility="Column" RowStyle="{StaticResource GridRowStyle2}" CellStyle="{StaticResource GridCellStyle2}" Background="#0D1422" BorderBrush="#263754" BorderThickness="1">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Email" Width="240" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Email}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="User ID" Width="280" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Id}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Created" Width="150" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding CreatedUtc, StringFormat={}{0:yyyy-MM-dd HH:mm}}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="State" Width="90" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Active}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Password" Width="120" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="••••••••" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Devices" Width="80" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Devices}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Licenses" Width="80" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Licenses}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Disabled reason" Width="*" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding DisabledReason}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="Devices">
+                <DockPanel Margin="4">
+                    <StackPanel DockPanel.Dock="Top">
+                        <WrapPanel>
+                            <TextBox x:Name="DeviceSearch" Width="320" ToolTip="Device name, ID, hardware ID or email"/>
+                            <Button Content="Search" Style="{StaticResource PrimaryButton2}" Click="Devices_Click"/>
+                            <Button Content="Refresh" Click="DevicesRefresh_Click"/>
+                            <Button Content="Block / Unblock" Click="ToggleDevice_Click"/>
+                            <Button Content="Release HWID" Style="{StaticResource DangerButton2}" Click="ReleaseDevice_Click"/>
+                            <Button Content="Copy HWID" Click="CopyDeviceHwid_Click"/>
+                            <Button Content="Copy Device ID" Click="CopyDeviceId_Click"/>
+                        </WrapPanel>
+                        <TextBlock x:Name="DevicesHint" Text="Release HWID unbinds every license locked to the selected device. This is an admin-only operation." Foreground="#7184A2" Margin="6,3,0,9"/>
+                    </StackPanel>
+                    <DataGrid x:Name="DevicesGrid" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" RowStyle="{StaticResource GridRowStyle2}" CellStyle="{StaticResource GridCellStyle2}" Background="#0D1422" BorderBrush="#263754" BorderThickness="1">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Device" Width="180" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="User ID" Width="250" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding UserId}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Hardware ID" Width="340" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding HardwareId}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Email" Width="230" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Email}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Last Seen" Width="155" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding LastSeenUtc, StringFormat={}{0:yyyy-MM-dd HH:mm}}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Active" Width="70" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Active}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Blocked" Width="80" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Blocked}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="Licenses">
+                <DockPanel Margin="4">
+                    <StackPanel DockPanel.Dock="Top">
+                        <WrapPanel>
+                            <TextBox x:Name="LicenseSearch" Width="300" ToolTip="Search license ID, masked key or owner email"/>
+                            <Button Content="Search" Style="{StaticResource PrimaryButton2}" Click="Licenses_Click"/>
+                            <Button Content="Refresh" Click="LicensesRefresh_Click"/>
+                            <Button Content="Create license" Style="{StaticResource PrimaryButton2}" Click="CreateLicense_Click"/>
+                            <Button Content="Copy key" Click="CopyLicense_Click"/>
+                            <Button Content="Rotate key" Click="RotateLicense_Click"/>
+                            <Button Content="Revoke" Style="{StaticResource DangerButton2}" Click="Revoke_Click"/><Button Content="Restore" Click="RestoreLicense_Click"/>
+                            <Button Content="Expire" Click="Expire_Click"/>
+                            <Button Content="Extend" Click="Extend_Click"/>
+                            <Button Content="Release device" Click="ReleaseLicenseDevice_Click"/>
+                        </WrapPanel>
+                        <WrapPanel Margin="0,4,0,8">
+                            <TextBlock Text="Extend days:" Foreground="#8192AE" VerticalAlignment="Center" Margin="6,0,6,0"/>
+                            <TextBox x:Name="ExtendDaysBox" Width="80" Text="30"/>
+                            <TextBlock Text="Newly created keys are retained in this admin session. Existing masked keys can be rotated to generate a fresh key." Foreground="#7184A2" Margin="12,3,0,0" TextWrapping="Wrap"/>
+                        </WrapPanel>
+                    </StackPanel>
+                    <DataGrid x:Name="LicensesGrid" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" RowStyle="{StaticResource GridRowStyle2}" CellStyle="{StaticResource GridCellStyle2}" Background="#0D1422" BorderBrush="#263754" BorderThickness="1">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="License" Width="190" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding KeyMasked}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Plan" Width="90" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Plan}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Owner" Width="240" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Owner}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Status" Width="100" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Status}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Expires" Width="160" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding ExpiresUtc, StringFormat={}{0:yyyy-MM-dd HH:mm}}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Devices" Width="80" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding DeviceCount}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Locked" Width="80" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Locked}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Banned" Width="80" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Banned}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="HWID" Width="230" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding HardwareFingerprintHash}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="ID" Width="*" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Id}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="Logs">
+                <DockPanel Margin="4">
+                    <StackPanel DockPanel.Dock="Top">
+                        <WrapPanel>
+                            <TextBox x:Name="LogSearch" Width="320" ToolTip="Filter by admin, action, target, ID or IP"/>
+                            <Button Content="Refresh logs" Style="{StaticResource PrimaryButton2}" Click="Logs_Click"/>
+                            <Button Content="Copy selected" Click="CopySelectedLog_Click"/>
+                        </WrapPanel>
+                        <TextBlock Text="Last 500 audit events • server-side audit trail" Foreground="#7184A2" Margin="6,3,0,9"/>
+                    </StackPanel>
+                    <DataGrid x:Name="LogsGrid" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" RowStyle="{StaticResource GridRowStyle2}" CellStyle="{StaticResource GridCellStyle2}" Background="#0D1422" BorderBrush="#263754" BorderThickness="1">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Time" Width="160" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding CreatedUtc, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Admin" Width="100" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Admin}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Action" Width="190" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Action}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Target" Width="110" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding TargetType}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Target ID" Width="260" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding TargetId}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="IP" Width="150" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding IpAddress}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Metadata" Width="*" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Metadata}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="Backup">
+                <DockPanel Margin="4">
+                    <StackPanel DockPanel.Dock="Top">
+                        <WrapPanel>
+                            <Button Content="Create backup" Style="{StaticResource PrimaryButton2}" Click="Backup_Click"/>
+                            <Button Content="Refresh" Click="BackupsRefresh_Click"/>
+                            <Button Content="Restore selected" Style="{StaticResource DangerButton2}" Click="Restore_Click"/>
+                        </WrapPanel>
+                        <TextBlock Text="Restore always creates a safety copy first." Foreground="#7184A2" Margin="6,3,0,9"/>
+                    </StackPanel>
+                    <DataGrid x:Name="BackupsGrid" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" RowStyle="{StaticResource GridRowStyle2}" CellStyle="{StaticResource GridCellStyle2}" Background="#0D1422" BorderBrush="#263754" BorderThickness="1">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="File" Width="*" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding FileName}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Created" Width="200" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding CreatedUtc, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Size" Width="120" HeaderStyle="{StaticResource GridHeaderStyle2}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding SizeBytes}" Style="{StaticResource GridTextStyle2}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+
+        <StackPanel Grid.Row="2" Margin="5,10,5,0">
+            <TextBlock x:Name="StatusText" Foreground="#A9B5CA"/>
+            <TextBlock x:Name="ApiUrlText" Foreground="#65738F" FontSize="11" Margin="0,3,0,0"/>
+        </StackPanel>
+
+        <Border x:Name="LoginOverlay" Background="#070B14" Grid.RowSpan="3" Panel.ZIndex="50">
+            <Border Width="470" Padding="36" Background="#111A2A" BorderBrush="#2B3C5A" BorderThickness="1" CornerRadius="20" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <StackPanel>
+                    <TextBlock Text="SURGE ADMIN" FontSize="12" FontWeight="Bold" Foreground="#8EA3FF"/>
+                    <TextBlock Text="Administrator login" FontSize="31" FontWeight="SemiBold" Margin="0,6,0,8"/>
+                    <TextBlock Text="Exclusive control surface for Surge licensing, devices, security and backups." Foreground="#7487A6" TextWrapping="Wrap" Margin="0,0,0,24"/>
+                    <TextBlock Text="Username" Foreground="#B8C4D9"/>
+                    <TextBox x:Name="AdminUserBox" Margin="0,7,0,14" Height="42"/>
+                    <TextBlock Text="Password" Foreground="#B8C4D9"/>
+                    <PasswordBox x:Name="AdminPasswordBox" Margin="0,7,0,20" Height="42"/>
+                    <Button x:Name="SignInButton" Content="Sign in" Style="{StaticResource PrimaryButton2}" Height="44" Click="Login_Click"/>
+                    <TextBlock Text="Administrator access only • HTTP/API endpoint is configurable for the current staging deployment." Foreground="#647797" FontSize="11" Margin="4,16,4,0" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
+</Window>
