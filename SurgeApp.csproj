@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <!-- Single source of truth. Everything that needs to display or compare a version reads it
+         back via Assembly.GetExecutingAssembly().GetName().Version (see ErrorReporter). -->
+    <Version>19.4.1</Version>
+    <AssemblyVersion>19.4.1.0</AssemblyVersion>
+    <FileVersion>19.4.1.0</FileVersion>
+    <InformationalVersion>19.4.1</InformationalVersion>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>Surge</AssemblyName>
+    <RootNamespace>SurgeApp</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <!-- Keep a PDB next to the binary: stack traces are no longer shown to users, so support
+         needs symbols to make sense of the protected local log. -->
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>true</Optimize>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Surge.LicenseServer\**" />
+    <Page Remove="Surge.LicenseServer\**" />
+    <EmbeddedResource Remove="Surge.LicenseServer\**" />
+    <None Remove="Surge.LicenseServer\**" />
+    <Content Remove="Surge.LicenseServer\**" />
+    <Compile Remove="Surge.AdminPanel\**" />
+    <Page Remove="Surge.AdminPanel\**" />
+    <ApplicationDefinition Remove="Surge.AdminPanel\**" />
+    <EmbeddedResource Remove="Surge.AdminPanel\**" />
+    <None Remove="Surge.AdminPanel\**" />
+    <Content Remove="Surge.AdminPanel\**" />
+    <Compile Remove="Surge.ServerControl\**" />
+    <Page Remove="Surge.ServerControl\**" />
+    <ApplicationDefinition Remove="Surge.ServerControl\**" />
+    <EmbeddedResource Remove="Surge.ServerControl\**" />
+    <None Remove="Surge.ServerControl\**" />
+    <Content Remove="Surge.ServerControl\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
+    <!-- Native WMI access for HardwareFingerprintService; replaces powershell.exe process spawning. -->
+    <PackageReference Include="System.Management" Version="8.0.0" />
+  </ItemGroup>
+</Project>

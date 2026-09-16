@@ -1,0 +1,27 @@
+<Window x:Class="SurgeApp.TweakDescriptionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SURGE — Tweak Details" Width="640" Height="390"
+        WindowStartupLocation="CenterOwner" WindowStyle="None" ResizeMode="NoResize"
+        AllowsTransparency="True" Background="Transparent" FontFamily="Segoe UI" ShowInTaskbar="False" Loaded="Window_Loaded">
+    <Border x:Name="Root" CornerRadius="18" Background="#0A0C14" BorderBrush="#2A2F47" BorderThickness="1" Padding="22" Opacity="0">
+        <Border.RenderTransform><TranslateTransform Y="8"/></Border.RenderTransform>
+        <Grid>
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <StackPanel>
+                <TextBlock Text="TWEAK DETAILS" FontSize="9.5" FontWeight="SemiBold" Foreground="#6ACBFF"/>
+                <TextBlock x:Name="TitleText" FontSize="21" FontWeight="SemiBold" Foreground="#F3F1F9" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                <TextBlock x:Name="CategoryText" FontSize="10" Foreground="#7D8398" Margin="0,4,0,0"/>
+            </StackPanel>
+            <ScrollViewer Grid.Row="1" Margin="0,18,0,18" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="DESCRIPTION" FontSize="9.5" FontWeight="SemiBold" Foreground="#777E96"/>
+                    <TextBlock x:Name="DescriptionText" FontSize="12" Foreground="#C0C4D2" TextWrapping="Wrap" LineHeight="20" Margin="0,6,0,14"/>
+                    <TextBlock Text="TECHNICAL NOTES" FontSize="9.5" FontWeight="SemiBold" Foreground="#777E96"/>
+                    <TextBlock x:Name="TechnicalText" FontSize="11" Foreground="#969CAE" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                </StackPanel>
+            </ScrollViewer>
+            <Button Grid.Row="2" Content="Close" Width="100" Height="32" HorizontalAlignment="Right" Style="{StaticResource ModernSecondaryButton}" Click="Close_Click"/>
+        </Grid>
+    </Border>
+</Window>

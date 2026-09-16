@@ -1,0 +1,53 @@
+[Unit]
+Description=Surge Server Control Service
+After=network.target
+
+[Service]
+# Type=simple, NOT notify. Neither project references Microsoft.Extensions.Hosting.Systemd
+# or calls UseSystemd(), so nothing ever sends sd_notify READY=1 and systemd would sit in
+# 'activating' until TimeoutStartSec elapsed and then kill a service that had started fine.
+Type=simple
+WorkingDirectory=/opt/surge/control
+ExecStart=/usr/bin/dotnet /opt/surge/control/Surge.ServerControl.dll
+Restart=always
+RestartSec=3
+
+# Least privilege. The previous unit ran this as root AND had the process shell out to sudo,
+# which is both redundant and the widest possible blast radius for the one component whose whole
+# job is executing systemctl. It now runs as a dedicated unprivileged account whose only elevated
+# capability is the three systemctl verbs granted in /etc/sudoers.d/surge-control.
+User=surge-control
+Group=surge-control
+
+# Deliberately loopback. The service also refuses at startup to bind anything else, so the
+# binding and the firewall are two independent controls rather than one.
+Environment=SURGE_CONTROL_URL=http://127.0.0.1:5078
+Environment=SURGE_DATA_PATH=/opt/surge/data
+Environment=SURGE_ADMIN_USER=admin
+Environment=DOTNET_EnableDiagnostics=0
+
+# REQUIRED: shared secret checked on every control request, in addition to the admin bearer
+# token. The service will not start without it. Must match the license server's surge.env.
+#   printf 'SURGE_CONTROL_SECRET=%s\n' "$(openssl rand -base64 48)" >> /opt/surge/control/control.env
+#   chown surge-control:surge-control /opt/surge/control/control.env && chmod 600 ...
+EnvironmentFile=/opt/surge/control/control.env
+
+# NoNewPrivileges MUST stay false: it would block the sudo call this service exists to make.
+# The narrowness comes from the sudoers rule, not from this flag.
+NoNewPrivileges=false
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+RestrictRealtime=true
+LockPersonality=true
+
+# Read-only access to token.secret is all it needs; it verifies admin tokens, never writes.
+ReadOnlyPaths=/opt/surge/data
+
+IPAddressDeny=any
+IPAddressAllow=localhost
+
+[Install]
+WantedBy=multi-user.target

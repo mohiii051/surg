@@ -1,0 +1,54 @@
+[Unit]
+Description=Surge License Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+# Type=simple, NOT notify. Neither project references Microsoft.Extensions.Hosting.Systemd
+# or calls UseSystemd(), so nothing ever sends sd_notify READY=1 and systemd would sit in
+# 'activating' until TimeoutStartSec elapsed and then kill a service that had started fine.
+Type=simple
+WorkingDirectory=/opt/surge/server
+ExecStart=/usr/bin/dotnet /opt/surge/server/Surge.LicenseServer.dll
+Restart=always
+RestartSec=5
+
+# Dedicated unprivileged account. This process holds the licence database, the JWT signing key
+# and the licence HMAC key; there is no reason for it to run as root.
+User=surge
+Group=surge
+
+# Bind loopback only and let nginx proxy the public HTTP endpoint in front. SURGE_BEHIND_PROXY makes the server
+# trust X-Forwarded-Proto and X-Forwarded-For from the proxies listed in SURGE_TRUSTED_PROXIES,
+# so per-IP rate limiting sees real client addresses instead of 127.0.0.1.
+Environment=SURGE_LICENSE_URL=http://127.0.0.1:5077
+Environment=SURGE_BEHIND_PROXY=true
+Environment=SURGE_TRUSTED_PROXIES=127.0.0.1;::1
+Environment=SURGE_DATA_PATH=/opt/surge/data
+Environment=SURGE_BACKUP_PATH=/opt/surge/backups
+Environment=SURGE_CONTROL_INTERNAL_URL=http://127.0.0.1:5078/
+Environment=DOTNET_EnableDiagnostics=0
+
+# Must contain SURGE_ADMIN_USER, SURGE_ADMIN_PASSWORD, SURGE_JWT_SECRET, SURGE_LICENSE_SECRET
+# and SURGE_CONTROL_SECRET (matching the control service). chown surge:surge, chmod 600.
+EnvironmentFile=/opt/surge/server/surge.env
+
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+LockPersonality=true
+MemoryDenyWriteExecute=false
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+ReadWritePaths=/opt/surge/data /opt/surge/backups
+
+[Install]
+WantedBy=multi-user.target
